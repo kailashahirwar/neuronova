@@ -1,18 +1,15 @@
-import time
-
 from dotenv import load_dotenv
-from langchain_experimental.llms.anthropic_functions import prompt
-from websocket import continuous_frame
 
 load_dotenv()
 
+import time
 from celery import Celery, Task, shared_task
 import os
 from flask_cors import CORS
 from base_agent import setup_agent, run_agent
-import uuid
 
 from flask import Flask, request, jsonify
+
 
 def celery_init_app(app: Flask) -> Celery:
     class FlaskTask(Task):
@@ -25,6 +22,7 @@ def celery_init_app(app: Flask) -> Celery:
     celery_app.set_default()
     app.extensions["celery"] = celery_app
     return celery_app
+
 
 def create_app() -> Flask:
     app = Flask(__name__)
@@ -41,6 +39,7 @@ def create_app() -> Flask:
     celery_init_app(app)
     return app
 
+
 app = create_app()
 celery_app = app.extensions["celery"]
 
@@ -49,6 +48,7 @@ CORS(app)
 agent = setup_agent()
 
 continuous_agent = setup_agent()
+
 
 @shared_task(ignore_result=True)
 def run_continuous_agent_delay(prompt):
