@@ -23,3 +23,18 @@ BASE_SPOT_PRICE=https://api.coinbase.com/v2/prices/{}/spot
 WALLET_DATA_FILE=wallet_details.txt
 AGENT_RUN_INTERVAL=60
 ```
+
+#### run flask server
+```
+python flask_server.py
+```
+
+#### start celery workers
+```
+celery -A flask_server.celery_app worker --loglevel INFO --concurrency 2
+```
+
+#### start the fetch_current_prices.py service
+```
+python fetch_current_prices.py
+```

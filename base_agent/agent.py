@@ -57,6 +57,18 @@ def run_agent(agent, prompt):
         print(f"Error:{str(e)}!")
         return None
 
+def run_continuous_agent(agent, prompt):
+    """
+    run this agent for an indefinite time
+    :param agent: ReACT agent instance
+    :param prompt: prompt to pass to the agent
+    :return: agent
+    """
+    config = {"configurable": {"thread_id": random.randint(100000, 99999999),
+                               "checkpoint_ns": "conversation",
+                               "checkpoint_id": str(uuid.uuid4())}}
+
+
 
 def create_agent(llm, wallet_details, tools, csv_agent=False, csv_file_path=None):
     """

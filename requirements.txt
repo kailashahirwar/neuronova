@@ -8,3 +8,5 @@ chromadb
 flask
 requests
 flask-cors
+celery
+redis

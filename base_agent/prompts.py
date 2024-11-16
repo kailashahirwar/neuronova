@@ -9,5 +9,5 @@ example_prompts = ["What's the price of ETH in USD on the base network. Use get_
                        "Use the last 5 values only."
                        "Use the prices data to compare the ETH if it declining or growing. "
                        "Calculate the percentage of growth in ETH. If the growth is more that 1%, make a purchase."
-                       "Use the get_spot_price_tool and DataRetriever tool to answer this question."
+                       "Use the get_spot_price_tool and data_retriever_tool tool to answer this question."
                    )]
