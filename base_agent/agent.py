@@ -3,7 +3,6 @@ import random
 import uuid
 from cdp_langchain.agent_toolkits import CdpToolkit
 from cdp_langchain.utils import CdpAgentkitWrapper
-from click import prompt
 from langchain.tools import Tool
 from langchain_community.document_loaders import CSVLoader
 from langchain_community.vectorstores import Chroma
@@ -14,8 +13,8 @@ from langchain_openai import OpenAIEmbeddings
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 
-from .utils import load_wallet
 from .tools import get_spot_price_tool
+from .utils import load_wallet
 
 
 def setup_agent():
