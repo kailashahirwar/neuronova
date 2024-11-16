@@ -3,12 +3,12 @@ from neuronova_sdk import NeuroNode
 import os
 from torch.utils.data import DataLoader
 import torch
-from ravnest import set_seed
+from ravnest import clusterize, set_seed
 from ravnest.trainer import BaseTrainerFullAsync
 from dstack_sdk import AsyncTappdClient, DeriveKeyResponse, TdxQuoteResponse
 from fastapi import FastAPI
 import numpy as np
-
+from models import CNN_Net
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
@@ -76,5 +76,8 @@ def start_node():
 
 @app.get("/")
 async def root():
+    model = CNN_Net()
+    example_args = torch.rand((64,1,8,8))
+    clusterize(model=model, example_args=(example_args,))
     start_node()
     return {"message": "The World! Call /derivekey or /tdxquote"}
