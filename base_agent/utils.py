@@ -1,3 +1,5 @@
+import datetime
+
 import json
 import os
 import pandas as pd
@@ -7,7 +9,10 @@ from cdp_langchain.agent_toolkits import CdpToolkit
 from cdp_langchain.utils import CdpAgentkitWrapper
 from langchain.agents import AgentType, initialize_agent
 from langchain.tools import Tool
+from langchain_community.document_loaders import CSVLoader
+from langchain_community.vectorstores import Chroma
 from langchain_experimental.agents import create_csv_agent
+from langchain_openai import OpenAIEmbeddings
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import create_react_agent
 
@@ -69,20 +74,51 @@ def create_agent(llm, wallet_details, tools, csv_agent=False, csv_file_path=None
     # create CDP toolkit from the agentkit wrapper
     cdp_toolkit = CdpToolkit.from_cdp_agentkit_wrapper(agentkit)
     all_tools = cdp_toolkit.get_tools() + tools
-    print(all_tools)
 
     # create memory
     memory = create_memory()
 
     if csv_agent:
-        csv_tool = create_csv_query_tool(llm=llm, file_path=csv_file_path)
-        all_tools = all_tools + [csv_tool]
-        return initialize_agent(
-            tools=all_tools,
-            llm=llm,
-            agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
-            verbose=True
+        # data = pd.read_csv("base_agent/data/prices.csv")
+
+        loader = CSVLoader(file_path="base_agent/data/prices.csv", encoding="utf-8")
+        documents = loader.load()
+
+        # preprocess data (e.g., concatenate columns for context)
+        # data["combined_text"] = data.apply(lambda row: " ".join(row.astype(str)), axis=1)
+
+        for i, doc in enumerate(documents):
+            doc.metadata['row_index'] = i
+
+        # create a Vector Store
+        embeddings = OpenAIEmbeddings()
+        # vector_store = Chroma.from_texts(data["combined_text"].tolist(), embeddings)
+
+        vectorstore = Chroma.from_documents(documents, embeddings)
+
+        def retrieve_data(query):
+            # Retrieve relevant documents
+            docs = vectorstore.similarity_search(query, k=10)
+
+            # Sort documents by original row index
+            docs.sort(key=lambda x: x.metadata['row_index'])
+
+            # Extract and return relevant information
+            results = []
+            for doc in docs:
+                result = {
+                    "content": doc.page_content,
+                    "metadata": doc.metadata
+                }
+                results.append(result)
+            return results
+
+        retrieval_tool = Tool(
+            name="DataRetriever",
+            func=retrieve_data,
+            description="Use this tool to retrieve relevant information from the CSV file."
         )
+        all_tools.extend([retrieval_tool])
 
     # create and return agent
     return create_react_agent(
@@ -213,14 +249,19 @@ def update_spot_prices(symbols, output_file_path):
     :param output_file_path: output file path
     """
 
-    prices = {"time": int(time.time() * 1000)}
+    now = datetime.datetime.now()
+    current_time = now.strftime('%Y-%m-%d %H:%M:%S %Z')
+
+    print(f"Current date and time: {current_time}")
+
+    prices = {"time": current_time}
 
     for index, symbol in enumerate(symbols):
-        print(symbol)
+        # print(symbol)
         price = get_spot_price(f"{symbol}-USD")
 
         prices[symbol] = price
-        print(f"price:{price}")
+        # print(f"price:{price}")
 
         # wait for 1 second
         time.sleep(0.1)

@@ -4,3 +4,5 @@ ethers
 pandas
 langchain-experimental
 tabulate
+chromadb
+flask
