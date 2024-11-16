@@ -28,5 +28,5 @@ class NeuroNode(ravnest.Node):
     def trigger_send(self, data, type=None):
         tdxQuote = requests.post('http://localhost:3000/tdxquote', data=cPickle.dumps(data))
         # tdxQuote = self.tappd_client.tdx_quote(cPickle.dumps(data))
-        print('Tdx quote for current computation: ', tdxQuote)
+        # print('Tdx quote for current computation: ', tdxQuote.text)
         super().trigger_send(data=data, type=type)
