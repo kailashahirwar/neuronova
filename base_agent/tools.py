@@ -1,8 +1,7 @@
 import json
-
 from langchain.tools import tool
 
-from .utils import get_spot_price, json_to_csv, update_spot_prices
+from .utils import get_spot_price, update_spot_prices, json_to_csv
 
 
 @tool
