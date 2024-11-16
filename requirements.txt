@@ -1,2 +1,6 @@
 cdp-langchain
 python-dotenv
+ethers
+pandas
+langchain-experimental
+tabulate
