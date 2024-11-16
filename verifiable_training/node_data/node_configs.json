@@ -1,0 +1,23 @@
+{
+    "0":{
+        "IP":"0.0.0.0:8080",
+        "benchmarks":{
+            "ram":8,
+            "bandwidth":10
+        }
+    },
+    "1":{
+        "IP":"0.0.0.0:8081",
+        "benchmarks":{
+            "ram":8,
+            "bandwidth":10
+        }
+    },
+    "2":{
+        "IP":"0.0.0.0:8082",
+        "benchmarks":{
+            "ram":8,
+            "bandwidth":10
+        }
+    }
+}
