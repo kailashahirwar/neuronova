@@ -7,3 +7,4 @@ tabulate
 chromadb
 flask
 requests
+flask-cors

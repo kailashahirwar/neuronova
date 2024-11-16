@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from langchain.chains.question_answering.map_rerank_prompt import output_parser
 
 load_dotenv()
 
@@ -69,3 +70,8 @@ def run_agent(prompt):
     # except KeyboardInterrupt:
     #     print("Stopping the agent!")
     #     sys.exit(0)
+
+if __name__ == '__main__':
+    response = run_agent("What's my wallet address?")
+    print(response)
+

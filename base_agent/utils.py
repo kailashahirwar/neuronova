@@ -8,6 +8,8 @@ import time
 from cdp_langchain.agent_toolkits import CdpToolkit
 from cdp_langchain.utils import CdpAgentkitWrapper
 from langchain.agents import AgentType, initialize_agent
+from langchain.agents.react.output_parser import ReActOutputParser
+from langchain.chains.question_answering.map_rerank_prompt import output_parser
 from langchain.tools import Tool
 from langchain_community.document_loaders import CSVLoader
 from langchain_community.vectorstores import Chroma
@@ -133,7 +135,7 @@ def create_agent(llm, wallet_details, tools, csv_agent=False, csv_file_path=None
                        "you must say so, and encourage them to implement it themselves using the CDP SDK + Agentkit,"
                        " recommend they go to docs.cdp.coinbase.com for more information. Be concise and helpful with "
                        "your responses. Refrain from restating your tools' descriptions unless it is "
-                       "explicitly requested.",
+                       "explicitly requested."
     )
 
 
