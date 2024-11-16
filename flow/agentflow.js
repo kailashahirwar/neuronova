@@ -33,6 +33,51 @@ const getWalletDetails = async () => {
   }
 };
 
+
+// Function to check price increase
+const checkPriceIncrease = async (prompt) => {
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      temperature: 0.5,
+      max_tokens: 100,
+      messages: [
+        {
+          role: "user",
+          content: `Extract token symbol, currency, and the fixed price from this prompt: "${prompt}". Provide a JSON object with "symbol", "currency", and "fixedPrice".`,
+        },
+      ],
+    });
+
+    const response = completion.choices[0].message.content;
+    console.log("AI Response:", response);
+
+    const { symbol, currency, fixedPrice } = JSON.parse(response);
+    const currencyPair = `${symbol.toUpperCase()}-${currency.toUpperCase()}`;
+
+    // Fetch live token price from Coinbase
+    const apiUrl = `https://api.coinbase.com/v2/prices/${currencyPair}/spot`;
+    const apiResponse = await axios.get(apiUrl);
+
+    const currentPrice = parseFloat(apiResponse.data.data.amount);
+    const targetPrice = parseFloat(fixedPrice) * 1.10; // 10% increase threshold
+
+    console.log(`Current Price of ${symbol.toUpperCase()} in ${currency.toUpperCase()}: $${currentPrice}`);
+    console.log(`Target Price (10% increase): $${targetPrice}`);
+
+    if (currentPrice >= targetPrice) {
+      console.log("Buy recommendation triggered.");
+      return "Buy";
+    } else {
+      console.log("No buy recommendation. Price hasn't increased enough.");
+      return "Hold";
+    }
+  } catch (error) {
+    console.error("Error checking price increase:", error.message || error);
+  }
+};
+
+
 // Function to execute a blockchain transaction
 const executeTransaction = async (prompt) => {
   try {
@@ -246,8 +291,13 @@ const handleUserPrompt = async (userPrompt) => {
     else if (userPrompt.toLowerCase().includes("price drop")||userPrompt.toLowerCase().includes("drop") ) {
         const result = await checkPriceDrop(userPrompt);
         console.log(`Result: ${result}`);}
+
+    else if (userPrompt.toLowerCase().includes("price increase")||(userPrompt.toLowerCase().includes("increase"))) {
+          const result = await checkPriceIncrease(userPrompt);
+          console.log(`Result: ${result}`);
+        } 
     else {
-      console.log("Unsupported prompt. Please specify 'Transfer', 'Wallet details', or 'Deploy token' or 'NFT Deploy'");
+      console.log("Unsupported prompt. Please specify 'Transfer', 'Wallet details', or 'Deploy token' or 'NFT Deploy' or 'Current Price' or 'Price drop' or 'Price increase'");
     }
   } catch (error) {
     console.error("Error handling user prompt:", error.message || error);
@@ -261,8 +311,8 @@ const userPrompt3 = "Deploy token named Memcoin with symbol MMC and initial supp
 const userPrompt4 = "Deploy NFT named Memcoin with symbol MMC";
 const userPrompt5 = "Get the current price of FLOW in USD";
 const userPrompt6 = "Check if BTC drops 5% from $90843 in USD. If yes, suggest buying";
-
-
+const userPrompt7 = "Check if BTC increases 10% above $$90886.05 in USD. If yes, suggest buying."
+ 
 // Call for transfer
 //handleUserPrompt(userPrompt1);
 
@@ -270,4 +320,8 @@ const userPrompt6 = "Check if BTC drops 5% from $90843 in USD. If yes, suggest b
 //handleUserPrompt(userPrompt2);
 
 // Call for deploying ERC20 token
-handleUserPrompt(userPrompt6);
+//handleUserPrompt(userPrompt7);
+
+
+
+
