@@ -12,7 +12,7 @@ from models import CNN_Net
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
-app = FastAPI()
+compute_dapp = FastAPI()
 
 set_seed(42)
 
@@ -74,7 +74,7 @@ def start_node():
     trainer.train()
 
 
-@app.get("/")
+@compute_dapp.get("/")
 async def root():
     model = CNN_Net()
     example_args = torch.rand((64,1,8,8))
