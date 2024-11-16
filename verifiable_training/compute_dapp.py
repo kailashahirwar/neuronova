@@ -1,11 +1,9 @@
-from neuronova_sdk import NeuroNode
+from neuronova_sdk import NeuroNode, NeuroTrainer
 
 import os
 from torch.utils.data import DataLoader
 import torch
 from ravnest import clusterize, set_seed
-from ravnest.trainer import BaseTrainerFullAsync
-from dstack_sdk import AsyncTappdClient, DeriveKeyResponse, TdxQuoteResponse
 from fastapi import FastAPI
 import numpy as np
 from models import CNN_Net
@@ -72,7 +70,7 @@ def start_node():
                 average_optim=True
     )
 
-    trainer = BaseTrainerFullAsync(node=neuronode,
+    trainer = NeuroTrainer(node=neuronode,
                       train_loader=train_loader,
                       val_loader=val_loader,
                       val_freq=64,
