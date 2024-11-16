@@ -25,5 +25,18 @@ def generate():
         return jsonify({"status": "failure", "message": "invalid call!"})
 
 
+@app.route("/restart", methods=['GET', 'POST'])
+def restart():
+    if request.method == "POST":
+        global agent
+        if request.get_json().get('secret') != os.environ.get("FLASK_AGENT_RESTART_SECRET"):
+            return jsonify({"status": "failure", "message": "invalid call!"})
+            
+        agent = setup_agent()
+        return jsonify({"status": "success", "message": "server restarted successfully!"})
+    else:
+        return jsonify({"status": "failure", "message": "invalid call!"})
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)

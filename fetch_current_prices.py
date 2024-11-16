@@ -4,8 +4,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 from datetime import datetime
+import requests
 
 import json
+import os
 
 from base_agent.utils import update_spot_prices, json_to_csv
 
@@ -26,6 +28,9 @@ def fetch_prices(num=None):
         json_to_csv("base_agent/data/prices.json", "base_agent/data/prices.csv")
         print("latest prices fetched successfully")
 
+        # restart ReACT agent
+        res = requests.post("http://0.0.0.0:5000/restart", json={"secret": os.environ.get("FLASK_AGENT_RESTART_SECRET")})
+        
         time.sleep(60 * 10)
 
 
