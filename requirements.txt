@@ -6,3 +6,4 @@ langchain-experimental
 tabulate
 chromadb
 flask
+requests
