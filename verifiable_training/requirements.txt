@@ -3,4 +3,3 @@ dstack-sdk==0.1.2
 asyncio>=3.4.3
 numpy
 web3
-git+https://github.com/ravenprotocol/ravnest.git@experimental
