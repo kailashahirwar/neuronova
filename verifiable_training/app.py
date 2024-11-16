@@ -1,6 +1,6 @@
 import os
 from dstack_sdk import AsyncTappdClient, DeriveKeyResponse, TdxQuoteResponse
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 import numpy as np
 
 app = FastAPI()
@@ -19,12 +19,12 @@ async def derivekey():
     limitedSize = deriveKey.toBytes(32)
     return {"deriveKey": asBytes.hex(), "derive_32bytes": limitedSize.hex()}
     
-@app.get("/tdxquote")
-async def tdxquote():
+@app.post("/tdxquote")
+async def tdxquote(request:Request):
     client = AsyncTappdClient()
-    a = np.array([1,2,3]*256)
     # tdxQuote = await client.tdx_quote('test')
-    tdxQuote = await client.tdx_quote(a.tobytes())
+    data:bytes = await request.body()
+    tdxQuote = await client.tdx_quote(data)
     
     assert isinstance(tdxQuote, TdxQuoteResponse)
     return {"tdxQuote": tdxQuote}

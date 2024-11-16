@@ -1,5 +1,7 @@
 import ravnest
 import torch
+import requests
+import _pickle as cPickle
 from dstack_sdk import TappdClient, AsyncTappdClient, DeriveKeyResponse, TdxQuoteResponse
 
 class NeuroNode(ravnest.Node):
@@ -21,9 +23,10 @@ class NeuroNode(ravnest.Node):
             **kwargs
         )
 
-        self.tappd_client = AsyncTappdClient()
+        self.tappd_client = TappdClient()
 
     def trigger_send(self, data, type=None):
-        tdxQuote = self.tappd_client.tdx_quote(data.numpy().tobytes())
+        tdxQuote = requests.post('http://localhost:3000/tdxquote', data=cPickle.dumps(data))
+        # tdxQuote = self.tappd_client.tdx_quote(cPickle.dumps(data))
         print('Tdx quote for current computation: ', tdxQuote)
         super().trigger_send(data=data, type=type)
