@@ -10,6 +10,7 @@
   "description": "",
   "dependencies": {
     "@onflow/fcl": "^1.12.3",
+    "axios": "^1.7.7",
     "ethers": "^6.13.4",
     "openai": "^4.72.0",
     "up": "^1.0.2",
