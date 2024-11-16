@@ -1,2 +1,4 @@
 .env
 .idea
+flow/node_modules
+flow/.env
